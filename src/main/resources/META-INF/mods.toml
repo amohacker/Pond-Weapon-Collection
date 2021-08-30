@@ -29,7 +29,7 @@ displayName="Pond weapon collection" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="duck.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="Thanks LunarStarAngel for making some of the textures for me" #optional
 # A text field displayed in the mod UI
 authors="AMOnDuck" #optional
 # The description text for the mod (multi line!) (#mandatory)
