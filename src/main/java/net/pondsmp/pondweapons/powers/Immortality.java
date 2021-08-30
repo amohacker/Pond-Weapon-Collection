@@ -38,7 +38,7 @@ public class Immortality {
     //Date, BlockPos, Integer radius, BasicParticleType
     private static ArrayList<List> effects = new ArrayList<>();
 
-    private static void addEffect(Date date, BlockPos pos, Integer radius, BasicParticleType type) {
+    public static void addEffect(Date date, BlockPos pos, Integer radius, BasicParticleType type) {
         List list = new ArrayList();
         list.add(date);
         list.add(pos);
@@ -79,16 +79,15 @@ public class Immortality {
     }
 
     //uses the midpoint circle algorithm to spawn particles in a circle
-    public static void drawSphere(ClientWorld world, BlockPos pos, int r, BasicParticleType particle) {
-        System.out.println("Drawing Sphere: ");
+    public static void drawSphere(ClientWorld world, BlockPos pos, int r, BasicParticleType particle, boolean randomized) {
         int x = r;
         int y = 0;
-        ParticleSpawner s = new ParticleSpawner(particle, world, true, r, pos, pos.getY());
+        ParticleSpawner s = new ParticleSpawner(particle, world, true, r, pos, pos.getY(), true);
         //spawning initial point on axis after translation
-        drawCircle(world, pos, particle, x+r, y + pos.getY());
+        drawCircle(world, pos, particle, x+r, y + pos.getY(), randomized);
         //if radius is 0 only a single point is spawned
         if (r>0) {
-            drawCircle(world, pos, particle, x + r, -y + pos.getY());
+            drawCircle(world, pos, particle, x + r, -y + pos.getY(), randomized);
 //            s.spawn(x + pos.getY(), x + pos.getY());
 //            s.spawn(-z + r, x + pos.getY());
         }
@@ -110,14 +109,14 @@ public class Immortality {
                 break;
 
             // Printing the generated point and its reflection in the other octants after translation
-            drawCircle(world, pos, particle, x + r, y+pos.getY());
+            drawCircle(world, pos, particle, x + r, y+pos.getY(), randomized);
 //            s.spawn(-x + r, z + pos.getY());
 //            s.spawn(x + r, -z + pos.getY());
 //            s.spawn(-x + r, -z + pos.getY());
 
             //If generated point is on the line x=z then the perimeter points have already been printed
             if (x != y) {
-                drawCircle(world, pos, particle, y + r, x + pos.getY());
+                drawCircle(world, pos, particle, y + r, x + pos.getY(), randomized);
 //                drawCircle(world, pos, particle, -z + r, x + pos.getY());
 //                drawCircle(world, pos, particle, z + r, -x + pos.getY());
 //                drawCircle(world, pos, particle, -z + r, -x + pos.getY());
@@ -126,16 +125,15 @@ public class Immortality {
     }
 
     public static void drawCircle(ClientWorld world, BlockPos pos, int r, BasicParticleType particle) {
-    drawCircle(world, pos, particle, r, pos.getY());
+    drawCircle(world, pos, particle, r, pos.getY(), false);
     }
 
 
         //uses the midpoint circle algorithm to spawn particles in a circle
-    public static void drawCircle(ClientWorld world, BlockPos pos, BasicParticleType particle, int r, double y) {
-        System.out.println("Drawing circle:");
+    public static void drawCircle(ClientWorld world, BlockPos pos, BasicParticleType particle, int r, double y, boolean randomized) {
         int x = r;
         int z = 0;
-        ParticleSpawner s = new ParticleSpawner(particle, world, true, r, pos, y);
+        ParticleSpawner s = new ParticleSpawner(particle, world, true, r, pos, y, randomized);
         //spawning initial point on axis after translation
         s.spawn(x+pos.getX(), z + pos.getZ());
         //if radius is 0 only a single point is spawned
@@ -186,23 +184,35 @@ public class Immortality {
         private ClientWorld world;
         private boolean force;
         private BlockPos pos;
-        public ParticleSpawner(BasicParticleType type, ClientWorld world, Boolean force, int radius, BlockPos pos, double y) {
+        private boolean randomized;
+        private SplittableRandom random = new SplittableRandom();
+        public ParticleSpawner(BasicParticleType type, ClientWorld world, Boolean force, int radius, BlockPos pos, double y, boolean randomized) {
             this.type = type;
             this.radius = radius;
             this.y = y;
             this.world = world;
             this.force = force;
             this.pos = pos;
+            this.randomized = randomized;
         }
         public void spawn(int x, int z){
             double xspeed;
             double yspeed;
             double zspeed;
-            xspeed = x - pos.getX();
-            yspeed = y - pos.getY();
-            zspeed = z - pos.getZ();
-            System.out.println("x= " + x + ", y= " + y + ", z= " + z);
-            world.addParticle(type, force, x, y, z, xspeed, yspeed, zspeed);
+            if (randomized = false){
+                xspeed = x - pos.getX();
+                yspeed = y - pos.getY();
+                zspeed = z - pos.getZ();
+                world.addParticle(type, force, x, y, z, xspeed, yspeed, zspeed);
+            } else {
+                if (random.nextInt(1,5)==1) {
+                    xspeed = x - pos.getX();
+                    yspeed = y - pos.getY();
+                    zspeed = z - pos.getZ();
+                    world.addParticle(type, force, x, y, z, xspeed, yspeed, zspeed);
+                }
+            }
+//            System.out.println("x= " + x + ", y= " + y + ", z= " + z);
         }
     }
 
@@ -290,16 +300,17 @@ public class Immortality {
         public static void particleTickEvent(TickEvent.PlayerTickEvent event){
             if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.START) {
                 if (!effects.isEmpty()) {
-                    for (List effect : effects){
+                    for (Iterator<List> it = effects.iterator(); it.hasNext();){
+                        List effect = it.next();
                         Date date = (Date) effect.get(0);
                         if (date.before(new Date())) {
-                            effects.remove(effect);
+                            it.remove();
                         } else {
                             BlockPos pos = (BlockPos) effect.get(1);
                             int radius = (int) effect.get(2);
                             BasicParticleType type = (BasicParticleType) effect.get(3);
-                            addEffect(date,pos,radius,type);
-                        }
+                            drawSphere((ClientWorld) event.player.getEntityWorld(),pos,radius,type, true);
+                    }
                     }
                 }
             }

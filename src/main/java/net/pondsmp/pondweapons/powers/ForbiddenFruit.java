@@ -15,8 +15,8 @@ import net.minecraft.world.World;
 import net.pondsmp.pondweapons.capabilities.IPowers;
 import net.pondsmp.pondweapons.capabilities.PowersCapability;
 
-public class ImmortalityBluepill extends Item {
-    public ImmortalityBluepill(Properties properties) {
+public class ForbiddenFruit extends Item {
+    public ForbiddenFruit(Properties properties) {
         super(properties);
     }
 

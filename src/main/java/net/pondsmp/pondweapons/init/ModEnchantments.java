@@ -3,8 +3,6 @@ package net.pondsmp.pondweapons.init;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.JSONUtils;
-import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -12,7 +10,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.pondsmp.pondweapons.PondWeaponMod;
 import net.pondsmp.pondweapons.enchantments.Thunder;
-import net.pondsmp.pondweapons.powers.ImmortalityRedpill;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

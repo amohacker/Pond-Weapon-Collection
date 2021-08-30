@@ -63,8 +63,9 @@ public class MessageHandlerOnClient {
     }
 
     private static void processMessage(ClientWorld clientWorld, ImmortalityParticlesToClient msg) {
-        final int RADIUS = 10;
+        final int RADIUS = 4;
         final BasicParticleType type = ParticleTypes.PORTAL;
-        Immortality.drawSphere(clientWorld, msg.getPos(), RADIUS, type);
+        Immortality.addEffect(msg.getDate(), msg.getPos(), RADIUS, type);
+
     }
 }

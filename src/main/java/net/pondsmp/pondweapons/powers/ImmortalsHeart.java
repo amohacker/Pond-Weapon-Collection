@@ -21,9 +21,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class ImmortalityRedpill extends Item {
+public class ImmortalsHeart extends Item {
 
-    public ImmortalityRedpill(Properties properties) {
+    public ImmortalsHeart(Properties properties) {
         super(properties);
     }
 
