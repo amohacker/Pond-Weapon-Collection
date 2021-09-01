@@ -73,7 +73,12 @@ public class Immortality {
     }
 
     private static double respawnInSeconds(PlayerEntity player) {
-        double time = (20 - last_damages.get(player)) - (player.deathTime / 20);
+        double time;
+        if (player.getTotalArmorValue() == 0){
+            time = (20 - (last_damages.get(player)*2) - (player.deathTime / 20));
+        } else {
+            time = (20 - last_damages.get(player)) - (player.deathTime / 20);
+        }
         if (time<0) return 0;
         return time;
     }
@@ -266,7 +271,7 @@ public class Immortality {
                         if(!event.player.isAlive() && iPowers.hasPower("immortality")){
                             try {
                                 ServerPlayerEntity player = (ServerPlayerEntity) event.player;
-                                player.sendStatusMessage(new StringTextComponent("Reviving in " + String.valueOf(20 - last_damages.get(player) - player.deathTime / 20) + " seconds."), true);
+                                player.sendStatusMessage(new StringTextComponent("Reviving in " + String.valueOf(respawnInSeconds(player)) + " seconds."), true);
                                 if (respawnInSeconds(player)==0) {
                                     last_damages.remove(player);
                                     player.markPlayerActive();
