@@ -212,7 +212,7 @@ public class Thunder extends Enchantment {
                     if(block.getType() == RayTraceResult.Type.BLOCK) {
                         BlockPos blockpos = ((BlockRayTraceResult) block).getPos();
                         LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(event.getWorld());
-                        lightning.setLocationAndAngles((double) blockpos.getX(), (double) blockpos.getY(), (double) blockpos.getZ(), (float) 0.0, (float) 0.0);
+                        lightning.setLocationAndAngles((double) blockpos.getX(), (double) blockpos.getY()+1, (double) blockpos.getZ(), (float) 0.0, (float) 0.0);
                         event.getPlayer().getHeldItemMainhand().getMaxDamage();
                         event.getWorld().addEntity(lightning);
                     }
